@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horaires Prière NIORO DU RIP</title>
+<meta name="theme-color" content="#0d7a3d">
+<link rel="manifest" href="manifest.json">
+
+<style>
+:root {
+  --vert: #0d7a3d;
+  --or: #d4af37;
+  --bg: #f8f9fa;
+  --text: #1a1a1a;
+  --card: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #121212; --text: #ffffff; --card: #1e1e1e; }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 16px;
+  line-height: 1.6;
+  padding-bottom: 120px;
+}
+.container { max-width: 500px; margin: 0 auto; }
+.header {
+  text-align: center;
+  background: linear-gradient(135deg, var(--vert), #0a5c2e);
+  color: white;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.header h1 { font-size: 1.4rem; margin-bottom: 4px; }
+.header p { opacity: 0.9; font-size: 0.9rem; }
+.ville-fix {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--vert);
+  border-radius: 12px;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  background: var(--card);
+  color: var(--text);
+  text-align: center;
+  font-weight: 700;
+}
+.priere-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-left: 4px solid var(--vert);
+  position: relative;
+}
+.priere-card.next {
+  border-left: 4px solid var(--or);
+  background: linear-gradient(90deg, rgba(212,175,55,0.1), var(--card));
+  transform: scale(1.02);
+}
+.priere-nom { font-weight: 600; font-size: 1.1rem; }
+.priere-heure { font-size: 1.3rem; font-weight: 700; color: var(--vert); }
+.notif-btn {
+  position: absolute;
+  right: 70px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  opacity: 0.3;
+  cursor: pointer;
+}
+.notif-btn.active { opacity: 1; }
+.countdown {
+  text-align: center;
+  background: var(--card);
+  padding: 16px;
+  border-radius: 16px;
+  margin: 20px 0;
+  font-size: 1.1rem;
+}
+.countdown span { color: var(--or); font-weight: 700; }
+.btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.btn-action {
+  padding: 14px;
+  background: var(--vert);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.btn-action.secondary {
+  background: var(--card);
+  color: var(--vert);
+  border: 2px solid var(--vert);
+}
+.qibla-container {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+  background: var(--card);
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 80px;
+}
+.compass-box {
+  width: 280px;
+  height: 280px;
+  margin: 20px auto;
+  position: relative;
+}
+.compass-bg {
+  width: 100%;
+  height: 100%;
+  border: 8px solid var(--vert);
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle, var(--card) 0%, #f0f0f0 100%);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+}
+.compass-rose {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transition: transform 0.2s ease-out;
+}
+.compass-rose::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;
+  height: 260px;
+  margin-left: -130px;
+  margin-top: -130px;
+  border-radius: 50%;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="%231a1a1a" font-size="7" font-weight="bold" text-anchor="middle"><text x="50" y="12">N</text><text x="88" y="53">E</text><text x="50" y="92">S</text><text x="12" y="53">O</text><text x="72" y="22">NE</text><text x="72" y="82">SE</text><text x="28" y="82">SO</text><text x="28" y="22">NO</text></g><g stroke="%231a1a1a" stroke-width="0.8"><line x1="50" y1="5" x2="50" y2="15"/><line x1="95" y1="50" x2="85" y2="50"/><line x1="50" y1="95" x2="50" y2="85"/><line x1="5" y1="50" x2="15" y2="50"/></g></svg>') center/cover;
+}
+.qibla-arrow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 110px;
+  background: linear-gradient(to top, var(--or) 0%, #ff4444 100%);
+  transform-origin: bottom center;
+  margin-left: -3px;
+  margin-top: -110px;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 0 10px rgba(255,68,68,0.5);
+  z-index: 10;
+  transition: transform 0.2s ease-out;
+}
+.qibla-arrow::after {
+  content: '🕋';
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+}
+.center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  background: var(--vert);
+  border: 3px solid white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+.compass-info {
+  margin-top: 25px;
+  padding: 20px;
+  background: rgba(13,122,61,0.08);
+  border-radius: 12px;
+  display: block;
+  width: 100%;
+}
+.compass-info .info-ligne {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  line-height: 1.5;
+  width: 100%;
+}
+.compass-info .info-ligne:last-child {
+  margin-bottom: 0;
+}
+.compass-info strong { color: var(--or); font-size: 1.2rem; }
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+}
+.modal-content {
+  background: var(--card);
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 24px;
+  border-radius: 16px;
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text);
+}
+.doua-ar {
+  font-size: 1.4rem;
+  text-align: right;
+  line-height: 2;
+  margin: 15px 0;
+  font-family: 'Traditional Arabic', serif;
+}
+.doua-fr {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  line-height: 1.6;
+}
+.footer {
+  text-align: center;
+  margin-top: 100px;
+  padding-top: 30px;
+  padding-bottom: 40px;
+  border-top: 3px solid rgba(13,122,61,0.3);
+  font-size: 0.8rem;
+  opacity: 0.7;
+  line-height: 1.8;
+  background: var(--bg);
+  display: block;
+  width: 100%;
+  clear: both;
+  position: relative;
+}
+.footer .creator {
+  color: var(--vert);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: block;
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🕌 Horaires de Prière</h1>
+    <p id="dateGregorian">NIORO DU RIP</p>
+  </div>
+
+  <div class="ville-fix">📍 NIORO DU RIP</div>
+
+  <div class="countdown" id="countdown">
+    Prochaine prière : <span id="nextPriere">-</span> dans <span id="tempsRestant">-</span>
+  </div>
+
+  <div id="listePrieres"></div>
+
+  <div class="btn-group">
+    <button class="btn-action" onclick="toggleQibla()">🧭 Qibla Ouest</button>
+    <button class="btn-action secondary" onclick="ouvrirMosquees()">🕌 Mosquées</button>
+    <button class="btn-action secondary" onclick="ouvrirDouas()">📖 Douas</button>
+    <button class="btn-action secondary" onclick="demanderNotif()">🔔 Adhan</button>
+  </div>
+
+  <div class="qibla-container" id="qiblaContainer">
+    <div class="compass-box">
+      <div class="compass-bg">
+        <div class="compass-rose" id="compassRose"></div>
+        <div class="qibla-arrow" id="qiblaArrow"></div>
+        <div class="center-dot"></div>
+      </div>
+    </div>
+    <div class="compass-info">
+      <div class="info-ligne">Direction Kaaba : <strong>OUEST 270°</strong></div>
+      <div class="info-ligne">Ton cap actuel : <strong id="capActuel">-°</strong></div>
+      <div class="info-ligne" id="instructionQibla">Tourne ton téléphone pour aligner la flèche 🕋</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Horaires NIORO DU RIP | MAJ chaque vendredi<br>
+    <span class="creator">Développé avec ❤️ par EL HADJI WACK BA</span>
+  </div>
+</div>
+
+<!-- MODAL DOUAS -->
+<div class="modal" id="modalDouas">
+  <div class="modal-content">
+    <button class="modal-close" onclick="fermerModal('modalDouas')">✕</button>
+    <h2>📖 Douas après Prière</h2>
+    <div class="doua-ar">أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ</div>
+    <div class="doua-fr">Astaghfirullah (3x) - Je demande pardon à Allah</div>
+    <hr style="margin: 20px 0; opacity: 0.2;">
+    <div class="doua-ar">اللَّهُمَّ أَنْتَ السَّلاَمُ وَمِنْكَ السَّلاَمُ، تَبَارَكْتَ يَا ذَا الْجَلاَلِ وَالإِكْرَامِ</div>
+    <div class="doua-fr">Ô Allah, Tu es la Paix et de Toi vient la paix. Béni sois-Tu, ô Détenteur de la Majesté et de la Générosité</div>
+    <hr style="margin: 20px 0; opacity: 0.2;">
+    <div class="doua-ar">آية الكرسي</div>
+    <div class="doua-fr"><strong>Ayat Al-Kursi :</strong> Allah ! Point de divinité à part Lui, le Vivant, Celui qui subsiste par lui-même...</div>
+  </div>
+</div>
+
+<script>
+const HORAIRES_NIORO = {
+  fajr: "5:38", 
+  shuruk: "6:56", 
+  dhuhr: "13:11", 
+  asr: "16:26", 
+  maghrib: "19:08", 
+  isha: "20:08"
+};
+
+const QIBLA_ANGLE = 270;
+let intervalCountdown;
+let compassActive = false;
+let notificationsActives = JSON.parse(localStorage.getItem('notifPrieres') || '[]');
+
+function afficherHoraires() {
+  const horaires = HORAIRES_NIORO;
+  const now = new Date();
+  const currentTime = now.getHours() * 60 + now.getMinutes();
+
+  let html = '';
+  let nextPriere = null;
+  let nextTime = null;
+
+  const prieres = [
+    { nom: 'Fajr', heure: horaires.fajr, key: 'fajr' },
+    { nom: 'Shuruk', heure: horaires.shuruk, key: 'shuruk' },
+    { nom: 'Dhuhr', heure: horaires.dhuhr, key: 'dhuhr' },
+    { nom: 'Asr', heure: horaires.asr, key: 'asr' },
+    { nom: 'Maghrib', heure: horaires.maghrib, key: 'maghrib' },
+    { nom: 'Isha', heure: horaires.isha, key: 'isha' }
+  ];
+
+  prieres.forEach(p => {
+    const [h, m] = p.heure.split(':').map(Number);
+    const priereTime = h * 60 + m;
+    const isNext =!nextPriere && priereTime > currentTime;
+    if (isNext) {
+      nextPriere = p.nom;
+      nextTime = priereTime;
+    }
+    const notifActive = notificationsActives.includes(p.key);
+    html += `<div class="priere-card ${isNext? 'next' : ''}">
+      <span class="priere-nom">${p.nom}</span>
+      <button class="notif-btn ${notifActive ? 'active' : ''}" onclick="toggleNotif('${p.key}')">🔔</button>
+      <span class="priere-heure">${p.heure}</span>
+    </div>`;
+  });
+
+  if (!nextPriere) {
+    nextPriere = 'Fajr';
+    const [h, m] = horaires.fajr.split(':').map(Number);
+    nextTime = h * 60 + m + 24 * 60;
+  }
+
+  document.getElementById('listePrieres').innerHTML = html;
+  document.getElementById('nextPriere').textContent = nextPriere;
+
+  return { nextPriere, nextTime, currentTime };
+}
+
+function updateCountdown() {
+  const { nextTime, currentTime } = afficherHoraires();
+  let diff = nextTime - currentTime;
+  if (diff < 0) diff += 24 * 60;
+
+  const h = Math.floor(diff / 60);
+  const m = diff % 60;
+  document.getElementById('tempsRestant').textContent = `${h}h ${m}min`;
+  
+  verifierNotifications();
+}
+
+function toggleQibla() {
+  const container = document.getElementById('qiblaContainer');
+  if (!compassActive) {
+    container.style.display = 'block';
+    startCompass();
+    compassActive = true;
+  } else {
+    container.style.display = 'none';
+    stopCompass();
+    compassActive = false;
+  }
+}
+
+function startCompass() {
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(response => {
+        if (response === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+          alert('Active la boussole dans les réglages pour utiliser cette fonction');
+        }
+      })
+      .catch(console.error);
+  } else {
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+}
+
+function stopCompass() {
+  window.removeEventListener('deviceorientation', handleOrientation);
+}
+
+function handleOrientation(event) {
+  if (event.alpha === null) {
+    document.getElementById('instructionQibla').textContent = 'Boussole non disponible sur cet appareil';
+    return;
+  }
+
+  const cap = Math.round(event.alpha);
+  document.getElementById('capActuel').textContent = cap + '°';
+
+  document.getElementById('compassRose').style.transform = `rotate(${-cap}deg)`;
+  
+  const qiblaDirection = QIBLA_ANGLE - cap;
+  document.getElementById('qiblaArrow').style.transform = `rotate(${qiblaDirection}deg)`;
+
+  let diff = Math.abs(qiblaDirection);
+  if (diff > 180) diff = 360 - diff;
+  
+  if (diff < 10) {
+    document.getElementById('instructionQibla').innerHTML = '✅ <strong>Tu es face à l\'OUEST - Qibla !</strong>';
+  } else {
+    document.getElementById('instructionQibla').textContent = 'Tourne ton téléphone pour aligner la flèche 🕋 vers l\'OUEST';
+  }
+}
+
+function demanderNotif() {
+  if ('Notification' in window) {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        alert('✅ Notifications Adhan activées ! Clique sur 🔔 à côté de chaque prière.');
+      }
+    });
+  }
+}
+
+function toggleNotif(priere) {
+  const index = notificationsActives.indexOf(priere);
+  if (index > -1) {
+    notificationsActives.splice(index, 1);
+  } else {
+    notificationsActives.push(priere);
+  }
+  localStorage.setItem('notifPrieres', JSON.stringify(notificationsActives));
+  afficherHoraires();
+}
+
+function verifierNotifications() {
+  if (Notification.permission !== 'granted') return;
+  
+  const now = new Date();
+  const currentTime = now.getHours() * 60 + now.getMinutes();
+  
+  Object.entries(HORAIRES_NIORO).forEach(([key, heure]) => {
+    if (notificationsActives.includes(key)) {
+      const [h, m] = heure.split(':').map(Number);
+      const priereTime = h * 60 + m;
+      const diff = priereTime - currentTime;
+      
+      if (diff === 5) {
+        new Notification('🕌 Adhan bientôt', {
+          body: `La prière ${key} est dans 5 minutes`,
+          icon: '/icon-192.png',
+          vibrate: [200, 100, 200]
+        });
+      }
+    }
+  });
+}
+
+function ouvrirMosquees() {
+  const lat = 13.7500;
+  const lng = -15.7833;
+  window.open(`https://www.google.com/maps/search/mosquée/@${lat},${lng},14z`, '_blank');
+}
+
+function ouvrirDouas() {
+  document.getElementById('modalDouas').style.display = 'block';
+}
+
+function fermerModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+// INIT
+document.getElementById('dateGregorian').textContent = new Date().toLocaleDateString('fr-FR', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+}) + ' - NIORO DU RIP';
+afficherHoraires();
+updateCountdown();
+intervalCountdown = setInterval(updateCountdown, 60000);
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
