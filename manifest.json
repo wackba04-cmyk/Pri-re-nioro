@@ -1,22 +1,22 @@
 {
-  "name": "Prière Nioro - EL HADJI WACK BA",
-  "short_name": "Nioro",
-  "description": "Horaires de prière Nioro du Rip avec Qibla OUEST 270°",
+  "name": "Prière Nioro",
+  "short_name": "Prière",
+  "description": "Heures de prière de Nioro du Rip - EL HADJI WACK BA",
   "start_url": "https://wackba04-cmyk.github.io/Pri-re-nioro/",
   "scope": "https://wackba04-cmyk.github.io/Pri-re-nioro/",
   "display": "standalone",
-  "background_color": "#0B3D2E",
-  "theme_color": "#0B3D2E",
+  "background_color": "#0F172A",
+  "theme_color": "#0F172A",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://i.imgur.com/8fKz8Yq.png",
+      "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://i.imgur.com/8fKz8Yq.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
