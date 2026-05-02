@@ -333,12 +333,12 @@ body {
 
 <script>
 const HORAIRES_NIORO = {
-  fajr: "5:38", 
-  shuruk: "6:56", 
-  dhuhr: "13:11", 
-  asr: "16:26", 
-  maghrib: "19:08", 
-  isha: "20:08"
+  fajr: "5:30", 
+  Souba: "5:40", 
+  Tisbaar: "14:15", 
+  Takousan: "17:00", 
+  Timis: "19:29", 
+  Guéé: "20:29"
 };
 
 const QIBLA_ANGLE = 270;
@@ -357,11 +357,11 @@ function afficherHoraires() {
 
   const prieres = [
     { nom: 'Fajr', heure: horaires.fajr, key: 'fajr' },
-    { nom: 'Shuruk', heure: horaires.shuruk, key: 'shuruk' },
-    { nom: 'Dhuhr', heure: horaires.dhuhr, key: 'dhuhr' },
-    { nom: 'Asr', heure: horaires.asr, key: 'asr' },
-    { nom: 'Maghrib', heure: horaires.maghrib, key: 'maghrib' },
-    { nom: 'Isha', heure: horaires.isha, key: 'isha' }
+    { nom: 'souba', heure: horaires.Souba, key: 'Souba' },
+    { nom: 'Tisbaar', heure: horaires.Tisbaar, key: 'Tisbaar' },
+    { nom: 'Takousan', heure: horaires.Takousan, key: 'Takousan' },
+    { nom: 'Timis', heure: horaires.Timis, key: 'Timis' },
+    { nom: 'Guéé', heure: horaires.Guéé, key: 'Guéé' }
   ];
 
   prieres.forEach(p => {
